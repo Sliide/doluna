@@ -1,6 +1,6 @@
 package doluna
 
-var HLR_LOOKUP_URL = "/hlr/v2/"
+var HLR_LOOKUP_URL = "/hlr/v2/sync"
 
 type DolunaClient struct {
 	ApiHost     string

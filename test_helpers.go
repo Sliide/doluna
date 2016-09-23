@@ -8,7 +8,7 @@ import (
 
 func ServerWithHlrResponse(response HlrLookupResponse) *httptest.Server {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/hlr/v2/", func(w http.ResponseWriter, req *http.Request) {
+	mux.HandleFunc(HLR_LOOKUP_URL, func(w http.ResponseWriter, req *http.Request) {
 		jsonResponse, err := json.Marshal(response)
 		if err != nil {
 			panic(err)

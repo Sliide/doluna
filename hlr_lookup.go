@@ -40,11 +40,9 @@ func (self *DolunaClient) HlrLookup(phoneNumber string) (*HlrLookupResponse, err
 		return nil, fmt.Errorf("Doluna returned %d status code", response.StatusCode)
 	}
 
-	decoder := json.NewDecoder(response.Body)
-
 	var hlrLookupResponse HlrLookupResponse
 
-	if err := decoder.Decode(&hlrLookupResponse); err != nil {
+	if err := json.NewDecoder(response.Body).Decode(&hlrLookupResponse); err != nil {
 		return nil, err
 	}
 

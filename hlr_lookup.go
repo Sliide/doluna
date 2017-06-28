@@ -2,7 +2,7 @@ package doluna
 
 import (
 	"encoding/json"
-	"fmt"
+	"errors"
 	"net/http"
 	"net/url"
 )
@@ -23,6 +23,11 @@ type HlrLookupResponse struct {
 	HlrTransRef            string `json:"hlr_trans_ref"`
 }
 
+var ErrHttpRequest = errors.New("Failed Http Request.")
+var ErrNon200Status = errors.New("Doluna returned non 200 Http Status Code.")
+var ErrJsonDecode = errors.New("Failed to decode json response.")
+var ErrHlrFailed = errors.New("HLR lookup Failed.")
+
 func (self *DolunaClient) HlrLookup(phoneNumber string) (*HlrLookupResponse, error) {
 	args := url.Values{}
 	args.Set("output", "json")
@@ -33,21 +38,21 @@ func (self *DolunaClient) HlrLookup(phoneNumber string) (*HlrLookupResponse, err
 
 	response, err := http.Get(self.ApiHost + HLR_LOOKUP_URL + "?" + args.Encode())
 	if err != nil {
-		return nil, err
+		return nil, ErrHttpRequest
 	}
 
 	if response.StatusCode != 200 {
-		return nil, fmt.Errorf("Doluna returned %d status code", response.StatusCode)
+		return nil, ErrNon200Status
 	}
 
 	var hlrLookupResponse HlrLookupResponse
 
 	if err := json.NewDecoder(response.Body).Decode(&hlrLookupResponse); err != nil {
-		return nil, err
+		return nil, ErrJsonDecode
 	}
 
 	if hlrLookupResponse.HlrStatus != "OK" {
-		return &hlrLookupResponse, fmt.Errorf(hlrLookupResponse.HlrErrorCode)
+		return &hlrLookupResponse, ErrHlrFailed
 	}
 
 	return &hlrLookupResponse, nil

@@ -64,7 +64,8 @@ func TestDolunaClientErrorResponse(t *testing.T) {
 	response, err := dolunaClient.HlrLookup("447775372611")
 
 	AssertNotEqual(t, err, nil)
-	AssertEqual(t, response.HlrErrorCode, fmt.Sprintf("%s", err.Error()))
+	AssertEqual(t, err, doluna.ErrHlrFailed)
+	AssertNotEqual(t, response, nil)
 }
 
 func TestDolunaClientNon200StatusCode(t *testing.T) {
